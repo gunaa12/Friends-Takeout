@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1013403778308",
+    "project_id": "friends-takeout",
+    "storage_bucket": "friends-takeout.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1013403778308:android:1c55cc091b6e6770942451",
+        "android_client_info": {
+          "package_name": "com.gunaa12.friends_takeout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1013403778308-gf6t1mg0942o2r6nhs1q7t4de274oro8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh6CRtswi1WiJit0jRLsSGtrSHZ7Zs1t8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1013403778308-gf6t1mg0942o2r6nhs1q7t4de274oro8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1013403778308-5g4d00sefl63r8smda30bjhhuhe9bp5h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gunaa12.friendsTakeout"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
