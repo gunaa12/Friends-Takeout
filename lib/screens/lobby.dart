@@ -91,11 +91,16 @@ class _LobbyScreenState extends State<LobbyScreen> {
                           setState(() {});
                           if (_users.contains((FirebaseAuth.instance.currentUser?.email ?? ""))) {
                             _users = _users.replaceAll(((FirebaseAuth.instance.currentUser?.email ?? "") + "; "), "");
-                            _db.collection('groups').doc(_groupID).set({
-                              "id": _groupID,
-                              "users": _users,
-                              "start": false,
-                            });
+                            if (_users == "") {
+                              _db.collection('groups').doc(_groupID).delete();
+                            }
+                            else {
+                              _db.collection('groups').doc(_groupID).set({
+                                "id": _groupID,
+                                "users": _users,
+                                "start": false,
+                              });
+                            }
                           }
                           _users = "";
                           _inAGroup = false;
@@ -119,7 +124,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                       color: kLightOrange,
                       onPress: () {
                         setState(() {});
-                          print("1 Users: ${_users}");
+                        if (!_users.contains(FirebaseAuth.instance.currentUser?.email ?? "")) {
                           String newUserList = _users +
                               (FirebaseAuth.instance.currentUser?.email ?? "") + "; ";
                           _db.collection('groups').doc(_groupID).set({
@@ -127,7 +132,8 @@ class _LobbyScreenState extends State<LobbyScreen> {
                             "users": newUserList,
                             "start": false,
                           });
-                          _inAGroup = true;
+                        }
+                        _inAGroup = true;
                       }
                     ),
                   ),
