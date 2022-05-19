@@ -10,6 +10,8 @@ const kGreen = Color(0xFF758E4F);
 
 const double kDefaultButtonWidth = 350.0;
 const double kDefaultTextFieldWidth = 375.0;
+const kDefaultButtonBorderRadius = 30.0;
+const kVerticalPadding = 16.0;
 
 var logo = Image.asset('assets/images/logo.png');
 

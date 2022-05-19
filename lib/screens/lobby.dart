@@ -137,16 +137,6 @@ class _LobbyScreenState extends State<LobbyScreen> {
                       }
                     ),
                   ),
-                  // Flexible(
-                  //   flex: 2,
-                  //   child: Button(
-                  //     content: Text('Create Group Code'),
-                  //     color: kLightOrange,
-                  //     onPress: () {
-                  //
-                  //     },
-                  //   ),
-                  // ),
                   Flexible(
                     flex: 2,
                     child: Button(
