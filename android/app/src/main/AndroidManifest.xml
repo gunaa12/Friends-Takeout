@@ -2,7 +2,7 @@
     package="com.gunaa12.friends_takeout">
 
    <application
-        android:label="friends_takeout"
+        android:label="Friends Takeout"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

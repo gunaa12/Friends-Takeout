@@ -20,9 +20,9 @@ class _LobbyScreenState extends State<LobbyScreen> {
   late FirebaseAuth _auth;
   late FirebaseFirestore _db;
 
-  String _tempGroupID = "";
   String _groupID = "";
   String _users = "";
+  int _numOfMembers = 0;
   bool _inAGroup = false;
 
   @override
@@ -95,10 +95,10 @@ class _LobbyScreenState extends State<LobbyScreen> {
                               _db.collection('groups').doc(_groupID).delete();
                             }
                             else {
-                              _db.collection('groups').doc(_groupID).set({
-                                "id": _groupID,
+                              _numOfMembers--;
+                              _db.collection('groups').doc(_groupID).update({
                                 "users": _users,
-                                "start": false,
+                                "numOfMembers": _numOfMembers,
                               });
                             }
                           }
@@ -127,10 +127,13 @@ class _LobbyScreenState extends State<LobbyScreen> {
                         if (!_users.contains(FirebaseAuth.instance.currentUser?.email ?? "")) {
                           String newUserList = _users +
                               (FirebaseAuth.instance.currentUser?.email ?? "") + "; ";
+                          _numOfMembers++;
                           _db.collection('groups').doc(_groupID).set({
                             "id": _groupID,
-                            "users": newUserList,
+                            "finishedVoting": 0,
                             "start": false,
+                            "users": newUserList,
+                            "numOfMembers": _numOfMembers,
                           });
                         }
                         _inAGroup = true;
@@ -192,9 +195,9 @@ class _LobbyScreenState extends State<LobbyScreen> {
             itemCount: snapshot?.data!.size ?? 0,
             itemBuilder: (context, _index) {
               var document = snapshot.data!.docs[_index];
-              print("ID: ${document["id"]}");
               if (document["id"] == _groupID) {
                 this._users = document["users"];
+                this._numOfMembers = document["numOfMembers"];
                 _inAGroup = true;
                 String toDisplay = "Users:\n" + _users.replaceAll("; ", "\n");
                 return Center(
@@ -229,12 +232,10 @@ class _LobbyScreenState extends State<LobbyScreen> {
   void onStart() {
     setState(() {});
     if (_inAGroup) {
-      _db.collection('groups').doc(_groupID).set({
-        "id": _groupID,
-        "users": _users,
+      _db.collection('groups').doc(_groupID).update({
         "start": true,
       });
-      Navigator.pushNamed(context, VotingScreen.id);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => VotingScreen(groupID: _groupID)));
     }
   }
 
