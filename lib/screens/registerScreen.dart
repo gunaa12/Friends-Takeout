@@ -1,9 +1,10 @@
 // Imports
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:friends_takeout/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:friends_takeout/screens/lobby.dart';
 import 'package:friends_takeout/components/button.dart';
+
 
 class RegisterScreen extends StatefulWidget {
   static const String id = "register_screen_id";
@@ -13,13 +14,14 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  late FirebaseAuth auth;
+  // Attributes
+  late FirebaseAuth _auth;
   late String _email;
   late String _password;
 
   @override
   void initState() {
-    auth = FirebaseAuth.instance;
+    _auth = FirebaseAuth.instance;
   }
 
   @override
@@ -74,9 +76,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     color: kDarkOrange,
                     onPress: () async {
                       try {
-                        print(_email);
-                        print(_password);
-                        await auth.createUserWithEmailAndPassword(
+                        await _auth.createUserWithEmailAndPassword(
                             email: _email, password: _password);
                         Navigator.pushNamed(context, LobbyScreen.id);
                       }

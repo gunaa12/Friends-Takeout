@@ -1,9 +1,10 @@
 // Imports
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:friends_takeout/constants.dart';
-import 'package:friends_takeout/components/button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:friends_takeout/screens/lobby.dart';
+import 'package:friends_takeout/components/button.dart';
 
 
 class LoginScreen extends StatefulWidget {
@@ -14,13 +15,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late FirebaseAuth auth;
+  late FirebaseAuth _auth;
   late String _email;
   late String _password;
 
   @override
   void initState() {
-    auth = FirebaseAuth.instance;
+    _auth = FirebaseAuth.instance;
   }
 
   @override
@@ -74,12 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     content: Text('Login'),
                     color: kLightOrange,
                     onPress: () async {
-                      final user = await auth.signInWithEmailAndPassword(email: _email, password: _password);
+                      final user = await _auth.signInWithEmailAndPassword(email: _email, password: _password);
                       if (user != null) {
                         Navigator.pushNamed(context, LobbyScreen.id);
-                      }
-                      else {
-                        print('Something went wrong while authenticating!');
                       }
                     },
                   ),
@@ -91,6 +89,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
-
 }

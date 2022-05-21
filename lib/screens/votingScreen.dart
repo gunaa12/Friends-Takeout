@@ -2,7 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:friends_takeout/components/button.dart';
-import 'package:friends_takeout/components/cardButton.dart';
+import 'package:friends_takeout/components/button.dart';
 import 'package:friends_takeout/screens/resultScreen.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
@@ -88,7 +88,7 @@ class _VotingScreenState extends State<VotingScreen> {
                           return SafeArea(
                             child: Container(
                               padding: EdgeInsets.all(15),
-                              child: CardButton(
+                              child: Button(
                                 color: checkColor(index),
                                 borderRadius: 15.0,
                                 verticalPadding: 10.0,

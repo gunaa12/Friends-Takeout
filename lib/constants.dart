@@ -1,6 +1,7 @@
 // Imports
 import 'package:flutter/material.dart';
 
+
 // Colors
 const kDarkBlue = Color(0xFF0B132B);
 const kLightBlue = Color(0xFF246A73);
@@ -8,10 +9,26 @@ const kDarkOrange = Color(0xFFFF7F11);
 const kLightOrange = Color(0xFFEEA243);
 const kGreen = Color(0xFF758E4F);
 
+// Pixel Value
 const double kDefaultButtonWidth = 350.0;
 const double kDefaultTextFieldWidth = 375.0;
 const kDefaultButtonBorderRadius = 30.0;
 const kVerticalPadding = 16.0;
+
+// Other Reused Items
+var kAppBar = AppBar(
+  backgroundColor: kGreen,
+  leading: Hero(
+    tag: 'logo',
+    child: logo,
+  ),
+  title: Text(
+    'Friends Takeout',
+    style: TextStyle(
+      fontFamily: 'Audiowide',
+    ),
+  ),
+);
 
 var logo = Image.asset('assets/images/logo.png');
 

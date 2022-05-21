@@ -1,14 +1,16 @@
 // Imports
 import 'package:flutter/material.dart';
 import 'package:friends_takeout/screens/homeScreen.dart';
-import 'package:friends_takeout/screens/lobby.dart';
 import 'package:friends_takeout/screens/loginScreen.dart';
 import 'package:friends_takeout/screens/registerScreen.dart';
-import 'package:friends_takeout/constants.dart';
-import 'package:friends_takeout/screens/resultScreen.dart';
 import 'package:friends_takeout/screens/votingScreen.dart';
+import 'package:friends_takeout/screens/resultScreen.dart';
+import 'package:friends_takeout/screens/lobby.dart';
+import 'package:friends_takeout/constants.dart';
+
 
 void main() => runApp(FriendsTakeout());
+
 
 class FriendsTakeout extends StatelessWidget {
   @override

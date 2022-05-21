@@ -1,11 +1,11 @@
 // Imports
 import 'dart:math';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:friends_takeout/constants.dart';
-import 'package:friends_takeout/components/button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:friends_takeout/screens/votingScreen.dart';
+import 'package:friends_takeout/components/button.dart';
 
 
 class LobbyScreen extends StatefulWidget {
@@ -17,6 +17,7 @@ class LobbyScreen extends StatefulWidget {
 
 
 class _LobbyScreenState extends State<LobbyScreen> {
+  // Attributes
   late FirebaseAuth _auth;
   late FirebaseFirestore _db;
 
@@ -39,19 +40,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            AppBar(
-              backgroundColor: kGreen,
-              leading: Hero(
-                  tag: 'logo',
-                  child: logo,
-              ),
-              title: Text(
-                'Friends Takeout',
-                style: TextStyle(
-                  fontFamily: 'Audiowide',
-                ),
-              ),
-            ),
+            kAppBar,
             Flexible(
               flex: 4,
               child: Column(
