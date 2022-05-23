@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:friends_takeout/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:friends_takeout/screens/homeScreen.dart';
 import 'package:friends_takeout/screens/votingScreen.dart';
 import 'package:friends_takeout/components/button.dart';
 
@@ -22,9 +23,10 @@ class _LobbyScreenState extends State<LobbyScreen> {
   late FirebaseFirestore _db;
 
   String _groupID = "";
-  String _users = "";
   int _numOfMembers = 0;
+  var _users = List<dynamic>.filled(1, "");
   bool _inAGroup = false;
+  final _groupIDTextBoxController = TextEditingController();
 
   @override
   void initState() {
@@ -60,11 +62,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                           child: Text(
                             "Join a group using a group code!",
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 30,
-                              color: Colors.white,
-                              fontFamily: 'Nunito',
-                            ),
+                            style: kHeaderFontStyle,
                           ),
                         ),
                       ),
@@ -76,22 +74,22 @@ class _LobbyScreenState extends State<LobbyScreen> {
                       width: 370,
                       padding: EdgeInsets.all(10),
                       child: TextField(
+                        controller: _groupIDTextBoxController,
                         onChanged: (String text) {
                           setState(() {});
                           if (_users.contains((FirebaseAuth.instance.currentUser?.email ?? ""))) {
-                            _users = _users.replaceAll(((FirebaseAuth.instance.currentUser?.email ?? "") + "; "), "");
-                            if (_users == "") {
+                            _users.remove(FirebaseAuth.instance.currentUser?.email ?? "");
+                            _numOfMembers--;
+                            if (_numOfMembers == 0) {
                               _db.collection('groups').doc(_groupID).delete();
                             }
                             else {
-                              _numOfMembers--;
                               _db.collection('groups').doc(_groupID).update({
                                 "users": _users,
                                 "numOfMembers": _numOfMembers,
                               });
                             }
                           }
-                          _users = "";
                           _inAGroup = false;
                           _groupID = text;
                         },
@@ -109,24 +107,58 @@ class _LobbyScreenState extends State<LobbyScreen> {
                   Flexible(
                     flex: 2,
                     child: Button(
-                      content: Text('Join/Create Group'),
-                      color: kLightOrange,
-                      onPress: () {
-                        setState(() {});
-                        if (!_users.contains(FirebaseAuth.instance.currentUser?.email ?? "")) {
-                          String newUserList = _users +
-                              (FirebaseAuth.instance.currentUser?.email ?? "") + "; ";
-                          _numOfMembers++;
+                        content: Text('Join Group'),
+                        color: kLightOrange,
+                        onPress: () {
+                          setState(() {});
+                          if ((_numOfMembers > 0) && (!_users.contains(FirebaseAuth.instance.currentUser?.email ?? ""))) {
+                            _inAGroup = true;
+                            _users.add(FirebaseAuth.instance.currentUser?.email ?? "");
+                            _numOfMembers++;
+                            _db.collection('groups').doc(_groupID).set({
+                              "id": _groupID,
+                              "numOfMembers": _numOfMembers,
+                              "users": _users,
+                              "start": false,
+                              "finishedVoting": 0,
+                            });
+                          }
+                        }
+                    ),
+                  ),
+                  Flexible(
+                    flex: 2,
+                    child: Button(
+                        content: Text('Create Group'),
+                        color: kLightOrange,
+                        onPress: () {
+                          setState(() {});
+                          if (_users.contains((FirebaseAuth.instance.currentUser?.email ?? ""))) {
+                            _users.remove(FirebaseAuth.instance.currentUser?.email ?? "");
+                            _numOfMembers--;
+                            if (_numOfMembers == 0) {
+                              _db.collection('groups').doc(_groupID).delete();
+                            }
+                            else {
+                              _db.collection('groups').doc(_groupID).update({
+                                "users": _users,
+                                "numOfMembers": _numOfMembers,
+                              });
+                            }
+                          }
+                          _groupID = createGroupCode(6);
+                          _groupIDTextBoxController.text = _groupID;
+                          _users = List<dynamic>.filled(1, (FirebaseAuth.instance.currentUser?.email ?? ""));
+                          _numOfMembers = 1;
                           _db.collection('groups').doc(_groupID).set({
                             "id": _groupID,
-                            "finishedVoting": 0,
-                            "start": false,
-                            "users": newUserList,
+                            "users": _users,
                             "numOfMembers": _numOfMembers,
+                            "start": false,
+                            "finishedVoting": 0,
                           });
+                          _inAGroup = true;
                         }
-                        _inAGroup = true;
-                      }
                     ),
                   ),
                   Flexible(
@@ -141,33 +173,33 @@ class _LobbyScreenState extends State<LobbyScreen> {
               ),
             ),
             Flexible(
-              flex: 1,
-              child: Column(
-                children: [
-                  Divider(
-                    color: kLightBlue,
-                    thickness: 2,
-                    endIndent: 20,
-                    indent: 20,
-                  ),
-                  Hero(
-                    tag: "logout_button",
-                    child: Container(
-                      margin: EdgeInsets.all(15),
-                      child: Button(
-                        content: Text(
-                          'Logout',
+                flex: 1,
+                child: Column(
+                  children: [
+                    Divider(
+                      color: kLightBlue,
+                      thickness: 2,
+                      endIndent: 20,
+                      indent: 20,
+                    ),
+                    Hero(
+                      tag: "logout_button",
+                      child: Container(
+                        margin: EdgeInsets.all(15),
+                        child: Button(
+                          content: Text(
+                            'Logout',
+                          ),
+                          onPress: () {
+                            _auth.signOut();
+                            Navigator.of(context).pushNamedAndRemoveUntil(HomeScreen.id, (Route<dynamic> route) => false);
+                          },
+                          color: kDarkOrange,
                         ),
-                        onPress: () {
-                          _auth.signOut();
-                          Navigator.pop(context);
-                        },
-                        color: kDarkOrange,
                       ),
                     ),
-                  ),
-                ],
-              )
+                  ],
+                )
             ),
           ],
         ),
@@ -177,50 +209,43 @@ class _LobbyScreenState extends State<LobbyScreen> {
 
   Widget getGroup() {
     return StreamBuilder(
-      stream: _db.collection('groups').snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasData) {
-          return ListView.builder(
-            itemCount: snapshot?.data!.size ?? 0,
-            itemBuilder: (context, _index) {
-              var document = snapshot.data!.docs[_index];
-              if (document["id"] == _groupID) {
-                this._users = document["users"];
-                this._numOfMembers = document["numOfMembers"];
-                _inAGroup = true;
-                String toDisplay = "Users:\n" + _users.replaceAll("; ", "\n");
-                return Center(
-                  child: Text(
-                    toDisplay,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.white,
-                      fontFamily: 'Nunito',
-                    ),
-                  ),
-                );
-              }
-              else {
-                return SizedBox(
-                  height: 0.0,
-                );
-              }
-            },
-          );
+        stream: _db.collection('groups').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot?.data!.size ?? 0,
+              itemBuilder: (context, _index) {
+                var document = snapshot.data!.docs[_index];
+                if (document["id"] == _groupID) {
+                  _users = document["users"];
+                  _numOfMembers = document["numOfMembers"];
+                  if (_numOfMembers == 0) return kEmptyBox;
+                  else {
+                    String toDisplay = "Users:";
+                    for (var item in _users) toDisplay += ("\n" + (item as String));
+                    return Center(
+                      child: Text(
+                        toDisplay,
+                        textAlign: TextAlign.center,
+                        style: kHeaderFontStyle,
+                      ),
+                    );
+                  }
+                }
+                else return kEmptyBox;
+              },
+            );
+          }
+          else {
+            return kEmptyBox;
+          }
         }
-        else {
-          return SizedBox(
-            height: 0.0,
-          );
-        }
-      }
     );
   }
 
   void onStart() {
     setState(() {});
-    if (_inAGroup) {
+    if ((_inAGroup) && (_numOfMembers >= kNumOfPeopleToStart)) {
       _db.collection('groups').doc(_groupID).update({
         "start": true,
       });
@@ -228,12 +253,17 @@ class _LobbyScreenState extends State<LobbyScreen> {
     }
   }
 
-  String createGroupCode() {
+  String createGroupCode(int size) {
     const _chars = '1234567890';
     Random _rnd = Random();
     String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
         length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
-    String randomString = getRandomString(6);
+    String randomString = getRandomString(size);
     return randomString;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

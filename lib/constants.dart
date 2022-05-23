@@ -48,3 +48,15 @@ const kInputFieldDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
   ),
 );
+
+int kNumOfPeopleToStart = 1;
+
+const Widget kEmptyBox = SizedBox(
+  height: 0.0,
+);
+
+TextStyle kHeaderFontStyle = TextStyle(
+  fontSize: 30,
+  color: Colors.white,
+  fontFamily: 'Nunito',
+);
